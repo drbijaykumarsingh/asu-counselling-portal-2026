@@ -33,7 +33,7 @@ $roleColor = match($role) {
 // Menu items visible per role (expand later)
 $menuItems = [
     ['icon' => '🎓', 'label' => 'Counselling',     'desc' => 'Search & process student admissions',   'url' => '#', 'roles' => ['super_admin','counsellor']],
-    ['icon' => '📋', 'label' => 'Seat Management',  'desc' => 'Configure & update seat matrix',        'url' => '#', 'roles' => ['super_admin','system_admin','hod']],
+    ['icon' => '📋', 'label' => 'Seat Management',  'desc' => 'Configure & update seat matrix',        'url' => 'seat_management.php', 'roles' => ['super_admin','system_admin','hod']],
     ['icon' => '📊', 'label' => 'Seat Display',     'desc' => 'Public-facing live seat availability',  'url' => '#', 'roles' => ['super_admin','system_admin','counsellor','hod','department']],
     ['icon' => '📁', 'label' => 'Upload Students',  'desc' => 'Import applicant data from Excel/CSV',  'url' => '#', 'roles' => ['super_admin','system_admin']],
     ['icon' => '👥', 'label' => 'Manage Users',     'desc' => 'Add, edit, and manage portal users',    'url' => '#', 'roles' => ['super_admin']],
