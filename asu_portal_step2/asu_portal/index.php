@@ -113,7 +113,7 @@ if (!empty($_SESSION['user_id'])) {
     color: var(--gold); font-weight: 500; opacity: 0.9;
   }
   .uni-name-assamese {
-    font-size: clamp(16px, 2vw, 35px);
+    font-size: clamp(16px, 2vw, 22px);
     color: rgba(255,255,255,0.82);
     font-weight: 400;
     line-height: 1.3;
@@ -121,7 +121,7 @@ if (!empty($_SESSION['user_id'])) {
   }
   .uni-name {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(26px, 3.2vw, 30px);
+    font-size: clamp(26px, 3.2vw, 40px);
     font-weight: 700; color: var(--white);
     line-height: 1.15;
     text-shadow: 0 2px 24px rgba(0,0,0,0.4);
@@ -323,10 +323,9 @@ if (!empty($_SESSION['user_id'])) {
         <img src="ASU_logo.png" alt="Assam Skill University Logo" style="width:92px;height:92px;border-radius:50%;object-fit:cover;" />
       </div>
       <div class="uni-name-block">
-       
+        <span class="uni-label">Government of Assam</span>
         <span class="uni-name-assamese">অসম দক্ষতা বিশ্ববিদ্যালয়</span>
         <span class="uni-name">Assam Skill University</span>
-         <span class="uni-label">Government of Assam</span>
       </div>
     </div>
 
@@ -347,7 +346,10 @@ if (!empty($_SESSION['user_id'])) {
         <span class="stat-num">6</span>
         <span class="stat-lbl">Departments</span>
       </div>
-      
+      <div class="stat">
+        <span class="stat-num">2026</span>
+        <span class="stat-lbl">Admission Cycle</span>
+      </div>
     </div>
 
     <div class="badge-row">
@@ -401,7 +403,7 @@ if (!empty($_SESSION['user_id'])) {
     </form>
 
     <div class="card-footer">
-      <a href="#">Help &amp; Support</a><br>
+      Academic Year 2025–26 &nbsp;|&nbsp; <a href="#">Help &amp; Support</a><br>
       Assam Skill University &copy; 2026
     </div>
   </div>
