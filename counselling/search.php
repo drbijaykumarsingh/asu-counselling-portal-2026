@@ -367,6 +367,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
           <select class="field-select" id="fExamType" onchange="checkSeats()">
             <option value="">— Select Exam —</option>
             <?php foreach ($examOptions as $val => $lbl): ?>
+              <option value="Merit">Not Applicable</option>
             <option value="<?= $val ?>"><?= htmlspecialchars($lbl) ?></option>
             <?php endforeach; ?>
           </select>
