@@ -30,17 +30,18 @@ $roleColor = match($role) {
     default        => '#C9962A',
 };
 
-// Menu items visible per role (expand later)
+// Menu items visible per role
+// HOD now only sees HOD Review and Reports (plus Dashboard and Account)
 $menuItems = [
-    ['icon' => '🎓', 'label' => 'Counselling',     'desc' => 'Search & process student admissions',   'url' => '../counselling/search.php',        'roles' => ['super_admin','counsellor']],
-    ['icon' => '📋', 'label' => 'Seat Management',  'desc' => 'Configure & update seat matrix',        'url' => 'seat_management.php', 'roles' => ['super_admin','system_admin','hod']],
-    ['icon' => '📊', 'label' => 'Seat Display',     'desc' => 'Public-facing live seat availability',  'url' => 'seat_display.php', 'roles' => ['super_admin','system_admin','counsellor','hod','department']],
-    ['icon' => '📁', 'label' => 'Upload Students',  'desc' => 'Import applicant data from Excel/CSV',  'url' => '../admin/upload_students.php',    'roles' => ['super_admin','system_admin']],
-    ['icon' => '👥', 'label' => 'Manage Users',     'desc' => 'Add, edit, and manage portal users',    'url' => '../admin/manage_users.php',       'roles' => ['super_admin']],
-    ['icon' => '💰', 'label' => 'Finance',          'desc' => 'Fee and payment records',               'url' => '../admin/finance.php',            'roles' => ['super_admin','finance']],
-    ['icon' => '🏢', 'label' => 'Department View',  'desc' => 'Department-wise admitted students',     'url' => '../admin/department_view.php',    'roles' => ['super_admin','department','hod']],
-    ['icon' => '📈', 'label' => 'Reports',          'desc' => 'Admission summary and exports',         'url' => '../admin/reports.php',            'roles' => ['super_admin','hod','finance']],
-    ['icon' => '📈', 'label' => 'Upload marks',     'desc' => 'CEE, JEE and ASUEE marks upload',         'url' => '../admin/upload_entrance.php',  'roles' => ['super_admin']],
+    ['icon' => '🎓', 'label' => 'Counselling',     'desc' => 'Search & process student admissions',   'url' => '../counselling/index.php',        'roles' => ['super_admin','counsellor']],
+    ['icon' => '📋', 'label' => 'Seat Management',  'desc' => 'Configure & update seat matrix',        'url' => 'seat_management.php',             'roles' => ['super_admin','system_admin']], // Removed 'hod'
+    ['icon' => '📊', 'label' => 'Seat Display',     'desc' => 'Public-facing live seat availability',  'url' => 'seat_display.php',                'roles' => ['super_admin','system_admin','counsellor','department']], // Removed 'hod'
+    ['icon' => '📁', 'label' => 'Upload Students',  'desc' => 'Import applicant data from Excel/CSV',  'url' => '../admin/upload_students.php',   'roles' => ['super_admin','system_admin']],
+    ['icon' => '👥', 'label' => 'Manage Users',     'desc' => 'Add, edit, and manage portal users',    'url' => '../admin/manage_users.php',      'roles' => ['super_admin']],
+    ['icon' => '💰', 'label' => 'Finance',          'desc' => 'Fee and payment records',               'url' => '../admin/finance_view.php',           'roles' => ['super_admin','finance']],
+    ['icon' => '🏢', 'label' => 'Department View',  'desc' => 'Department-wise admitted students',     'url' => '../admin/department_view.php',   'roles' => ['super_admin','department']], // Removed 'hod'
+    ['icon' => '📌', 'label' => 'HOD Review',       'desc' => 'Review department verified students',   'url' => '../admin/hod_view.php',          'roles' => ['super_admin','hod']],
+    ['icon' => '📈', 'label' => 'Reports',          'desc' => 'Admission summary and exports',         'url' => '../admin/reports.php',           'roles' => ['super_admin','hod','finance']],
 ];
 
 // Filter by role
@@ -246,10 +247,42 @@ $visible = array_filter($menuItems, fn($m) => in_array($role, $m['roles']));
   .module-label { font-size: 15px; font-weight: 600; color: #1a2a42; margin-bottom: 4px; }
   .module-desc  { font-size: 12.5px; color: #8a95aa; line-height: 1.5; }
 
+  /* HOD specific styling */
+  .module-card.hod-card {
+    border-color: #fb5607;
+    background: linear-gradient(135deg, #fff9f5, #fff);
+  }
+  .module-card.hod-card .module-icon {
+    background: #fef0e8;
+    color: #fb5607;
+  }
+  .module-card.hod-card:hover {
+    border-color: #fb5607;
+    box-shadow: 0 12px 32px rgba(251,86,7,0.15);
+  }
+
   /* Footer */
   .page-footer {
     text-align: center; font-size: 12px; color: #aab0c0;
     padding-top: 16px; border-top: 1px solid #e8ecf4;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .sidebar { width: 60px; }
+    .sidebar-uni-assamese, .sidebar-uni-name, .nav-item span:not(.nav-icon), .user-info, .nav-section-label { display: none; }
+    .sidebar-logo img { width: 32px; height: 32px; }
+    .sidebar-top { padding: 12px; }
+    .sidebar-nav { padding: 8px 4px; }
+    .nav-item { justify-content: center; padding: 10px; }
+    .user-badge { justify-content: center; }
+    .btn-logout span { display: none; }
+    .btn-logout { font-size: 18px; padding: 8px; }
+    .main { margin-left: 60px; padding: 20px; }
+    .welcome-banner { flex-direction: column; text-align: center; padding: 24px; gap: 16px; }
+    .welcome-banner::before, .welcome-banner::after { display: none; }
+    .module-grid { grid-template-columns: 1fr; }
+    .topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
   }
 </style>
 </head>
@@ -341,8 +374,11 @@ $visible = array_filter($menuItems, fn($m) => in_array($role, $m['roles']));
       <div class="module-label">Dashboard</div>
       <div class="module-desc">Portal overview and quick stats</div>
     </a>
-    <?php foreach ($visible as $item): ?>
-    <a href="<?= htmlspecialchars($item['url']) ?>" class="module-card">
+    <?php foreach ($visible as $item):
+      // Check if this is the HOD Review item to apply special styling
+      $isHodCard = ($item['label'] === 'HOD Review');
+    ?>
+    <a href="<?= htmlspecialchars($item['url']) ?>" class="module-card <?= $isHodCard ? 'hod-card' : '' ?>">
       <div class="module-icon"><?= $item['icon'] ?></div>
       <div class="module-label"><?= htmlspecialchars($item['label']) ?></div>
       <div class="module-desc"><?= htmlspecialchars($item['desc']) ?></div>
