@@ -8,7 +8,7 @@
 
 ### Admission Counselling Portal 2026
 
-A centralized web-based admission counselling and seat allocation system developed for **Assam Skill University** to streamline the complete admission workflow from applicant verification to final admission.
+A centralised web-based admission counselling and seat allocation system developed for **Assam Skill University** to streamline the complete admission workflow from applicant verification to final admission.
 
 ![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge\&logo=php)
 ![MySQL](https://img.shields.io/badge/MySQL-8.x-4479A1?style=for-the-badge\&logo=mysql)
@@ -23,7 +23,7 @@ A centralized web-based admission counselling and seat allocation system develop
 
 The **ASU Admission Counselling Portal 2026** is a web-based application developed to automate and manage the complete admission counselling process at Assam Skill University.
 
-The portal eliminates manual admission processing by providing a centralized workflow for:
+The portal eliminates manual admission processing by providing a centralised workflow for:
 
 * Student verification
 * Entrance data processing
@@ -75,10 +75,10 @@ The system supports multiple administrative roles with role-based authentication
 
 ## Reports
 
-Generate various reports including:
+Generate various reports, including:
 
 * Admitted students
-* Students in counselling pipeline
+* Students in the counselling pipeline
 * Rejected candidates
 * Seat availability reports
 * Dashboard statistics
@@ -144,7 +144,7 @@ Integrated QR Code generation for admission-related activities using the PHP QR 
 
 # User Roles
 
-The portal supports multiple administrative roles including:
+The portal supports multiple administrative roles, including:
 
 * Administrator
 * Counselling Staff
@@ -247,7 +247,7 @@ http://localhost/asu-counselling-portal-2026
 # Security Features
 
 * Session-based authentication
-* Role-based authorization
+* Role-based authorisation
 * Database-driven access control
 * Secure login/logout workflow
 
@@ -280,13 +280,12 @@ docs/screenshots/
 
 # Author
 
-**Dr. Bijay Kumar Singh**
+**Dr. Abdul Hannan**
+**Mr. Sagar Kalita**
+**Mr. Bijay Kumar Singh**
 
-Research Scholar
 Department of Information Technology
 Assam Skill University, Mangaldoi
-
-GitHub: https://github.com/drbijaykumarsingh
 
 ---
 
@@ -307,7 +306,3 @@ For academic and institutional use only unless otherwise specified.
 * PHP QR Code Library
 
 ---
-
-## Star the repository ⭐
-
-If you find this project useful, please consider giving it a ⭐ on GitHub.
