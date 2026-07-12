@@ -46,7 +46,7 @@ $totalSeats = (int)$stmt->fetchColumn();
 $stmt = $pdo->query("
     SELECT SUM(
         COALESCE(a.btech_cse_aiml, 0) + COALESCE(a.btech_cse_cyber, 0) + 
-        COALESCE(a.btech_ece, 0) + COALESCE(p.btech_ee, 0) + 
+        COALESCE(a.btech_ece, 0) + COALESCE(a.btech_ee, 0) + 
         COALESCE(a.btech_civil, 0) + COALESCE(a.lat_cse_aiml, 0) + 
         COALESCE(a.lat_cse_cyber, 0) + COALESCE(a.lat_civil, 0) + 
         COALESCE(a.int_btech_mech_cadcam, 0) + COALESCE(a.dip_elec_eng, 0) + 
