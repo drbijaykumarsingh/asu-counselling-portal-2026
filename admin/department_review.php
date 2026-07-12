@@ -93,6 +93,25 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
 .modal-alert{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
 .modal-alert.error{background:#fff0f0;border:1px solid #ffc0c0;color:#8b2020;display:block;}
 .modal-alert.success{background:#edfdf5;border:1px solid #a3e6c3;color:#1a6640;display:block;}
+
+/* Document checklist */
+.review-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+.checklist-card{background:#f8f9fd;border-radius:12px;border:1.5px solid #e0e4ef;padding:18px 16px;}
+.checklist-title{font-size:11.5px;font-weight:700;color:#1a2a42;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.checklist-badge{background:#0B2545;color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600;}
+.doc-item{display:flex;align-items:flex-start;gap:9px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:background .12s;margin-bottom:2px;}
+.doc-item:hover{background:#eef1fa;}
+.doc-item input[type=checkbox]{width:15px;height:15px;accent-color:#0B2545;cursor:pointer;flex-shrink:0;margin-top:2px;}
+.doc-item label{font-size:12.5px;color:#1a2a42;cursor:pointer;line-height:1.35;}
+.doc-item input:checked+label{color:#0B2545;font-weight:600;}
+.doc-item.checked{background:#edf5ff;}
+.checklist-sep{height:1px;background:#e0e4ef;margin:10px 0;}
+.checklist-actions{display:flex;gap:8px;}
+.btn-chk{padding:5px 11px;border-radius:6px;font-size:11.5px;font-weight:500;cursor:pointer;border:1.5px solid #d0d6e8;background:#fff;color:#6b7a99;font-family:'Inter',sans-serif;transition:all .15s;}
+.btn-chk:hover{border-color:#0B2545;color:#0B2545;}
+.btn-unchk:hover{border-color:#ef233c!important;color:#ef233c!important;}
+.checked-summary{margin-top:10px;font-size:11.5px;color:#8a95aa;text-align:center;padding:6px;background:#fff;border-radius:6px;border:1px solid #e8ecf4;}
+.checked-summary strong{color:#1a6640;}
 </style>
 </head>
 <body>
@@ -110,7 +129,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
   </div>
   <nav class="sidebar-nav">
     <a href="../dashboard/home.php" class="nav-item">🏠 Dashboard</a>
-    <a href="department_view.php" class="nav-item active">🏢 Department View</a>
+    <a href="department_view.php" class="nav-item active">📝 Document Verification View</a>
   </nav>
   <div class="sidebar-footer">
     <div class="user-badge">
@@ -180,58 +199,169 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
     </div>
   </div>
 
-  <!-- Remarks + Actions -->
+  <!-- Remarks + Checklist + Actions -->
   <div class="card">
-    <div class="section-title">Department Review</div>
-    <label class="f-label" for="remarks">Remarks</label>
-    <textarea id="remarks" class="f-textarea" placeholder="Enter remarks for this verification…" <?= $alreadyProcessed ? 'disabled' : '' ?>></textarea>
+    <div class="section-title">Document Verification Review</div>
+    <div class="review-grid">
 
-    <div class="action-row">
-      <button class="btn-verify" id="btnVerify" onclick="submitDecision('verify')" <?= $alreadyProcessed ? 'disabled' : '' ?>>✓ Verified</button>
-      <button class="btn-reject" id="btnReject" onclick="submitDecision('reject')" <?= $alreadyProcessed ? 'disabled' : '' ?>>✕ Rejected</button>
+      <!-- Left: Remarks + Action buttons -->
+      <div>
+        <label class="f-label" for="remarks">Remarks</label>
+        <textarea id="remarks" class="f-textarea" placeholder="Enter remarks for this verification…" <?= $alreadyProcessed ? 'disabled' : '' ?>></textarea>
+        <div class="action-row">
+          <button class="btn-verify" id="btnVerify" onclick="submitDecision('verify')" <?= $alreadyProcessed ? 'disabled' : '' ?>>✓ Verified</button>
+          <button class="btn-reject" id="btnReject" onclick="submitDecision('reject')" <?= $alreadyProcessed ? 'disabled' : '' ?>>✕ Rejected</button>
+        </div>
+      </div>
+
+      <!-- Right: Document checklist -->
+      <div class="checklist-card">
+        <div class="checklist-title">
+          Particulars Verified
+          <span class="checklist-badge" id="chkBadge">0 / 13</span>
+        </div>
+
+        <?php
+        $docs = [
+          'Name of the Candidate',
+          'Date of Birth / HSLC Admit Card',
+          'HSLC Marksheet',
+          'HSLC Pass Certificate',
+          'HSSLC / Diploma Marksheet',
+          'HSSLC / Diploma Pass Certificate',
+          'Graduation Marksheet',
+          'Graduation Pass Certificate',
+          'ASUEE / CEE / JEE / GATE Score Card',
+          'Category Certificate (OBC-NCL / MOBC / SC / ST / EWS / PwD)',
+          'PRC',
+          'Fitness Certificate',
+          'Gap Certificate',
+        ];
+        foreach ($docs as $i => $doc):
+        ?>
+        <div class="doc-item" id="docitem_<?= $i ?>">
+          <input type="checkbox" id="doc_<?= $i ?>" value="<?= htmlspecialchars($doc) ?>"
+                 onchange="onDocCheck(this, <?= $i ?>)"
+                 <?= $alreadyProcessed ? 'disabled' : '' ?>>
+          <label for="doc_<?= $i ?>"><?= htmlspecialchars($doc) ?></label>
+        </div>
+        <?php endforeach; ?>
+
+        <div class="checklist-sep"></div>
+        <div class="checklist-actions">
+          <button class="btn-chk" onclick="checkAll()" <?= $alreadyProcessed ? 'disabled' : '' ?>>✓ All</button>
+          <button class="btn-chk btn-unchk" onclick="uncheckAll()" <?= $alreadyProcessed ? 'disabled' : '' ?>>✕ Clear</button>
+        </div>
+        <div class="checked-summary" id="chkSummary">
+          <strong id="chkCount">0</strong> of 13 particulars verified
+        </div>
+      </div>
+
     </div>
   </div>
 </main>
 
 <script>
-const studentId = <?= (int)$stu['id'] ?>;
+const studentId  = <?= (int)$stu['id'] ?>;
+const totalDocs  = 13;
 
+// ── Checklist ─────────────────────────────────────────────────
+function onDocCheck(cb, idx) {
+  document.getElementById('docitem_' + idx).classList.toggle('checked', cb.checked);
+  updateCount();
+}
+
+function updateCount() {
+  const checked = document.querySelectorAll('.checklist-card input[type=checkbox]:checked').length;
+  document.getElementById('chkCount').textContent  = checked;
+  document.getElementById('chkBadge').textContent  = checked + ' / ' + totalDocs;
+}
+
+function checkAll() {
+  document.querySelectorAll('.checklist-card input[type=checkbox]').forEach((cb, i) => {
+    cb.checked = true;
+    document.getElementById('docitem_' + i).classList.add('checked');
+  });
+  updateCount();
+}
+
+function uncheckAll() {
+  document.querySelectorAll('.checklist-card input[type=checkbox]').forEach((cb, i) => {
+    cb.checked = false;
+    document.getElementById('docitem_' + i).classList.remove('checked');
+  });
+  updateCount();
+}
+
+// ── Build combined remarks (checklist + manual remarks) ───────
+function buildRemarks() {
+  const checkedDocs = [...document.querySelectorAll('.checklist-card input[type=checkbox]:checked')]
+    .map(cb => cb.value);
+  const uncheckedDocs = [...document.querySelectorAll('.checklist-card input[type=checkbox]:not(:checked)')]
+    .map(cb => cb.value);
+  const manualRemarks = document.getElementById('remarks').value.trim();
+
+  let combined = '';
+  if (checkedDocs.length > 0) {
+    combined += 'Documents Verified (' + checkedDocs.length + '/' + totalDocs + '):\n';
+    checkedDocs.forEach(d => { combined += '  ✓ ' + d + '\n'; });
+  }
+  if (uncheckedDocs.length > 0) {
+    combined += 'Documents Not Submitted/Verified:\n';
+    uncheckedDocs.forEach(d => { combined += '  ✗ ' + d + '\n'; });
+  }
+  if (manualRemarks) {
+    combined += (combined ? '\nRemarks: ' : '') + manualRemarks;
+  }
+  return combined.trim();
+}
+
+// ── Submit decision ───────────────────────────────────────────
 function submitDecision(action) {
-  const remarks = document.getElementById('remarks').value.trim();
-  const alertBox = document.getElementById('serverAlert');
+  const alertBox  = document.getElementById('serverAlert');
   const btnVerify = document.getElementById('btnVerify');
   const btnReject = document.getElementById('btnReject');
 
-  if (!confirm(action === 'verify'
-      ? 'Confirm verification of this student?'
-      : 'Confirm rejection of this student?')) return;
+  const checkedCount = document.querySelectorAll('.checklist-card input[type=checkbox]:checked').length;
+
+  // Warn if verifying with 0 documents checked
+  if (action === 'verify' && checkedCount === 0) {
+    if (!confirm('No documents have been checked. Are you sure you want to verify without confirming any documents?')) return;
+  } else {
+    if (!confirm(action === 'verify'
+        ? 'Confirm verification of this student?'
+        : 'Confirm rejection of this student?')) return;
+  }
 
   btnVerify.disabled = true; btnReject.disabled = true;
   alertBox.style.display = 'none';
 
   const fd = new FormData();
-  fd.append('id', studentId);
-  fd.append('action', action);
-  fd.append('remarks', remarks);
+  fd.append('id',      studentId);
+  fd.append('action',  action);
+  fd.append('remarks', buildRemarks());
 
   fetch('department_action.php', { method: 'POST', body: fd })
     .then(r => r.json())
     .then(data => {
       if (data.success) {
-        alertBox.className = 'modal-alert success';
+        alertBox.className   = 'modal-alert success';
         alertBox.textContent = action === 'verify'
           ? 'Student verified successfully. Redirecting…'
           : 'Student rejected. Redirecting…';
+        alertBox.style.display = 'block';
         setTimeout(() => { window.location.href = 'department_view.php'; }, 1200);
       } else {
-        alertBox.className = 'modal-alert error';
-        alertBox.textContent = data.message || 'Something went wrong.';
+        alertBox.className     = 'modal-alert error';
+        alertBox.textContent   = data.message || 'Something went wrong.';
+        alertBox.style.display = 'block';
         btnVerify.disabled = false; btnReject.disabled = false;
       }
     })
     .catch(() => {
-      alertBox.className = 'modal-alert error';
-      alertBox.textContent = 'Network error. Please try again.';
+      alertBox.className     = 'modal-alert error';
+      alertBox.textContent   = 'Network error. Please try again.';
+      alertBox.style.display = 'block';
       btnVerify.disabled = false; btnReject.disabled = false;
     });
 }

@@ -16,8 +16,8 @@ $category = trim($_GET['category']  ?? '');
 
 // Whitelist allowed column names to prevent SQL injection
 $allowedCols = [
-    'btech_cse_aiml','btech_cse_cyber','btech_ece_vlsi','btech_ece_comm','btech_civil',
-    'lat_cse_aiml','lat_cse_cyber','lat_civil',
+    'btech_cse_aiml','btech_cse_cyber','btech_ece','btech_civil',
+    'lat_cse_aiml','lat_cse_cyber','lat_civil','btech_ee',
     'int_btech_mech_cadcam','dip_elec_eng','dip_elec_ev',
     'mtech_it_aiml','mtech_ece_vlsi','mtech_ece_wireless','mtech_civil_const',
     'pgdip_aiml','pgdip_const_tech',

@@ -344,7 +344,7 @@ if (!empty($_SESSION['user_id'])) {
         <span class="stat-lbl">Programmes</span>
       </div>
       <div class="stat">
-        <span class="stat-num">6</span>
+        <span class="stat-num">8</span>
         <span class="stat-lbl">Departments</span>
       </div>
       

@@ -19,34 +19,54 @@ $username = $_SESSION['username'];
 
 $pdo = getDB();
 
-// For HOD role, only show students from their department
-$departmentFilter = '';
+// Department filter — GET param takes priority; HOD role may be session-locked
+$fDept  = trim($_GET['department'] ?? '');
+
+$where  = ["status = 2"];
 $params = [];
-if ($_SESSION['role'] === 'hod') {
-    $dept = $_SESSION['department_name'] ?? $_SESSION['department'] ?? '';
-    if ($dept) {
-        $departmentFilter = " AND department_name = ? ";
-        $params[] = $dept;
+
+// If HOD role has a session-level department lock, enforce it
+if ($role === 'hod') {
+    $sessionDept = $_SESSION['department_name'] ?? $_SESSION['department'] ?? '';
+    if ($sessionDept) {
+        $where[]  = "department_name = ?";
+        $params[] = $sessionDept;
+        $fDept    = $sessionDept; // lock filter to session dept
+    } elseif ($fDept) {
+        $where[]  = "department_name = ?";
+        $params[] = $fDept;
     }
+} elseif ($fDept) {
+    $where[]  = "department_name = ?";
+    $params[] = $fDept;
 }
+
+$whereSQL = implode(' AND ', $where);
+
+// All distinct departments that have status=2 students (for filter dropdown)
+$deptList = $pdo->query("
+    SELECT DISTINCT department_name
+    FROM admitted_students
+    WHERE status = 2
+    ORDER BY department_name
+")->fetchAll(PDO::FETCH_COLUMN);
 
 $stmt = $pdo->prepare("
     SELECT id, uan_no, cname, programme_name, department_name, admitted_category, admission_date
     FROM admitted_students
-    WHERE status = 2
-    $departmentFilter
-    ORDER BY admission_date DESC
+    WHERE $whereSQL
+    ORDER BY department_name, admission_date DESC
 ");
 $stmt->execute($params);
 $students = $stmt->fetchAll();
 
-// Get count of pending HOD reviews
-$countStmt = $pdo->prepare("
-    SELECT COUNT(*) FROM admitted_students 
-    WHERE status = 2 $departmentFilter
-");
+// Pending count (filtered)
+$countStmt = $pdo->prepare("SELECT COUNT(*) FROM admitted_students WHERE $whereSQL");
 $countStmt->execute($params);
-$pendingCount = $countStmt->fetchColumn();
+$pendingCount = (int)$countStmt->fetchColumn();
+
+// Total pending across all depts (for info)
+$totalPending = (int)$pdo->query("SELECT COUNT(*) FROM admitted_students WHERE status = 2")->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,6 +127,19 @@ tr:hover td{background:#fafbff;}
 
 .btn-proceed{padding:7px 18px;border-radius:8px;font-size:12.5px;font-weight:600;border:none;cursor:pointer;font-family:'Inter',sans-serif;background:linear-gradient(135deg,#fb5607,#e04a00);color:#fff;text-decoration:none;display:inline-block;transition:opacity .15s,transform .15s;}
 .btn-proceed:hover{opacity:.9;transform:translateY(-1px);}
+
+/* Filter bar */
+.filter-bar{background:#fff;border-radius:12px;padding:16px 20px;border:1px solid #e8ecf4;box-shadow:0 2px 8px rgba(0,0,0,0.04);margin-bottom:22px;display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;}
+.f-group{display:flex;flex-direction:column;gap:5px;min-width:220px;flex:1;}
+.f-label{font-size:10.5px;font-weight:600;color:#8a95aa;text-transform:uppercase;letter-spacing:0.06em;}
+.f-select{padding:10px 14px;border:1.5px solid #d0d6e8;border-radius:9px;font-size:14px;color:#1a2a42;font-family:'Inter',sans-serif;background:#fff;outline:none;appearance:none;transition:border-color .2s;cursor:pointer;}
+.f-select:focus{border-color:var(--gold);}
+.btn-filter{padding:10px 22px;background:var(--navy);color:#fff;border:none;border-radius:9px;font-size:13.5px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;transition:opacity .2s;}
+.btn-filter:hover{opacity:.85;}
+.btn-clear{padding:10px 16px;background:#f4f6fc;color:#6b7a99;border:1px solid #e0e4ef;border-radius:9px;font-size:13.5px;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;}
+.btn-clear:hover{background:#e8ecf4;}
+.active-filter-badge{display:inline-flex;align-items:center;gap:6px;background:#fff3ee;border:1px solid rgba(251,86,7,0.3);border-radius:20px;padding:4px 12px;font-size:12px;color:#e04a00;font-weight:500;}
+
 </style>
 </head>
 <body>
@@ -143,17 +176,49 @@ tr:hover td{background:#fafbff;}
 <main class="main">
   <div class="page-header">
     <div>
-      <div class="page-title">HOD Review</div>
+      <div class="page-title">📌 HOD Review</div>
       <div class="page-sub">Students verified by Department, awaiting HOD approval</div>
     </div>
-    <span class="status-badge"><?= $pendingCount ?> pending</span>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <?php if($fDept && $role !== 'hod'): ?>
+      <span class="active-filter-badge">🏢 <?= htmlspecialchars($fDept) ?></span>
+      <?php endif; ?>
+      <span class="status-badge"><?= $pendingCount ?> pending</span>
+    </div>
   </div>
+
+  <!-- Department filter (hidden for session-locked HODs) -->
+  <?php if($role !== 'hod' || empty($_SESSION['department_name'] ?? $_SESSION['department'] ?? '')): ?>
+  <form method="GET" class="filter-bar">
+    <div class="f-group">
+      <div class="f-label">Filter by Department</div>
+      <select name="department" class="f-select">
+        <option value="">— All Departments —</option>
+        <?php foreach($deptList as $d): ?>
+        <option value="<?= htmlspecialchars($d) ?>" <?= $fDept===$d?'selected':'' ?>>
+          <?= htmlspecialchars($d) ?>
+        </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <button type="submit" class="btn-filter">Filter</button>
+    <?php if($fDept): ?>
+    <a href="hod_view.php" class="btn-clear">✕ Clear</a>
+    <?php endif; ?>
+  </form>
+  <?php endif; ?>
 
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-num"><?= $pendingCount ?></div>
-      <div class="stat-lbl">Pending HOD Review</div>
+      <div class="stat-lbl"><?= $fDept ? 'Pending in '.htmlspecialchars($fDept) : 'Total Pending HOD Review' ?></div>
     </div>
+    <?php if($fDept && $totalPending !== $pendingCount): ?>
+    <div class="stat-card">
+      <div class="stat-num"><?= $totalPending ?></div>
+      <div class="stat-lbl">All Departments Total</div>
+    </div>
+    <?php endif; ?>
   </div>
 
   <div class="table-card">
@@ -175,7 +240,9 @@ tr:hover td{background:#fafbff;}
           <tr class="no-results">
             <td colspan="7">
               <span class="nr-icon">📭</span>
-              No students currently pending HOD review.
+              <?= $fDept
+                ? 'No students pending HOD review in <strong>'.htmlspecialchars($fDept).'</strong>.'
+                : 'No students currently pending HOD review.' ?>
             </td>
           </tr>
           <?php else: foreach ($students as $s): ?>

@@ -14,18 +14,19 @@ if (empty($_SESSION['user_id']) || !in_array($_SESSION['role'], ['super_admin','
 }
 
 // ── Input ────────────────────────────────────────────────────
-$uanNo       = trim($_POST['uan_no']       ?? '');
-$examType    = trim($_POST['exam_type']    ?? '');
-$progCol     = trim($_POST['prog_col']     ?? '');
-$deptCode    = trim($_POST['dept_code']    ?? '');
-$admittedCat = trim($_POST['admitted_cat'] ?? '');
-$ews         = trim($_POST['ews']          ?? '');
-$obcNcl      = trim($_POST['obc_ncl']      ?? '');
-$progType    = trim($_POST['prog_type']    ?? '');
-
+$uanNo          = trim($_POST['uan_no']           ?? '');
+$examType       = trim($_POST['exam_type']        ?? '');
+$progCol        = trim($_POST['prog_col']         ?? '');
+$deptCode       = trim($_POST['dept_code']        ?? '');
+$admittedCat    = trim($_POST['admitted_cat']     ?? '');
+$ews            = trim($_POST['ews']              ?? '');
+$obcNcl         = trim($_POST['obc_ncl']          ?? '');
+$progType       = trim($_POST['prog_type']        ?? '');
+$prevAdmittedId = (int)($_POST['prev_admitted_id'] ?? 0); // >0 means readmission
+$entranceScore  = trim($_POST['entrance_score']    ?? '');  // score for the selected exam
 // Whitelist column
 $allowedCols = [
-    'btech_cse_aiml','btech_cse_cyber','btech_ece_vlsi','btech_ece_comm','btech_civil',
+    'btech_cse_aiml','btech_cse_cyber','btech_ece','btech_ee','btech_civil',
     'lat_cse_aiml','lat_cse_cyber','lat_civil',
     'int_btech_mech_cadcam','dip_elec_eng','dip_elec_ev',
     'mtech_it_aiml','mtech_ece_vlsi','mtech_ece_wireless','mtech_civil_const',
@@ -44,8 +45,8 @@ if (!$uanNo || !$examType || !$deptCode || !$admittedCat) {
 $progNames = [
     'btech_cse_aiml'        => 'B.Tech CSE (AI & Machine Learning)',
     'btech_cse_cyber'       => 'B.Tech CSE (Cyber Security)',
-    'btech_ece_vlsi'        => 'B.Tech ECE (VLSI Design)',
-    'btech_ece_comm'        => 'B.Tech ECE (Communication & Networks)',
+    'btech_ee'              => 'B.Tech Electrical Engineering',
+    'btech_ece'             => 'B.Tech ECE',
     'btech_civil'           => 'B.Tech Civil Engineering (Digital Transformation)',
     'lat_cse_aiml'          => 'B.Tech Lateral Entry CSE (AI-ML)',
     'lat_cse_cyber'         => 'B.Tech Lateral Entry CSE (Cyber Security)',
@@ -72,7 +73,7 @@ $deptNames = [
 ];
 // Programme serial per dept+type (for enrolment number)
 $progSerial = [
-    'btech_cse_aiml'=>'01','btech_cse_cyber'=>'02','btech_ece_vlsi'=>'01','btech_ece_comm'=>'02',
+    'btech_cse_aiml'=>'01','btech_cse_cyber'=>'02','btech_ece'=>'01','btech_ee'=>'01',
     'btech_civil'=>'01','lat_cse_aiml'=>'01','lat_cse_cyber'=>'02','lat_civil'=>'01',
     'int_btech_mech_cadcam'=>'01','dip_elec_eng'=>'01','dip_elec_ev'=>'01',
     'mtech_it_aiml'=>'01','mtech_ece_vlsi'=>'01','mtech_ece_wireless'=>'02','mtech_civil_const'=>'01',
@@ -85,6 +86,31 @@ $pdo = getDB();
 
 try {
     $pdo->beginTransaction();
+
+    // ── 0. Readmission: delete old rejected record if exists ──
+    // This runs when student was previously rejected (-2/-3/-4)
+    // and is now being re-admitted as a fresh candidate.
+    if ($prevAdmittedId > 0) {
+        // Verify it's truly a rejected record (negative status) for this UAN
+        $checkOld = $pdo->prepare("SELECT id, status FROM admitted_students WHERE id = ? AND uan_no = ? LIMIT 1");
+        $checkOld->execute([$prevAdmittedId, $uanNo]);
+        $oldRec = $checkOld->fetch();
+        if ($oldRec && (int)$oldRec['status'] < 0) {
+            // Delete the old rejected record so fresh INSERT works below
+            $pdo->prepare("DELETE FROM admitted_students WHERE id = ?")->execute([$prevAdmittedId]);
+        }
+        // Reset admission_status to fresh state for this UAN
+        $pdo->prepare("
+            UPDATE admission_status SET
+                status = 'Counselling Initiated',
+                st2_user = NULL, st2_remarks = NULL, st2_date_time = NULL,
+                st3_user = NULL, st3_remarks = NULL, st3_date_time = NULL,
+                st4_user = NULL, st4_remarks = NULL, st4_date_time = NULL,
+                st5_date_time = NULL,
+                payment_status = NULL, amount = NULL, reference_no = NULL
+            WHERE uan_no = ?
+        ")->execute([$uanNo]);
+    }
 
     // ── 1. Re-check seat count (prevent race condition) ───────
     $seatStmt = $pdo->prepare("SELECT `$progCol` AS seats FROM program_seats WHERE exam_type = ? AND category = ? LIMIT 1 FOR UPDATE");
@@ -102,16 +128,31 @@ try {
     if (!$stu) { $pdo->rollBack(); echo json_encode(['success'=>false,'message'=>'Student not found.']); exit; }
 
     // ── 3. Generate enrolment number ─────────────────────────
-    $year    = date('y'); // 2-digit year e.g. 26
+    $year    = date('y');
     $serial  = $progSerial[$progCol] ?? '01';
     $prefix  = $deptCode . $year . $progType . $serial;
 
-    // Get next student serial for this prefix
-    $cntStmt = $pdo->prepare("SELECT COUNT(*) FROM admitted_students WHERE programme_code = ?");
-    $cntStmt->execute([$prefix]);
-    $count   = (int)$cntStmt->fetchColumn();
-    $stuSerial = str_pad($count + 1, 2, '0', STR_PAD_LEFT);
-    $enrolNo = $prefix . $stuSerial;
+    // Count from BOTH admitted_students AND withdrawn_students to avoid reuse.
+    // Also find the highest existing serial numerically to handle gaps safely.
+    $cntActive = $pdo->prepare("
+        SELECT MAX(CAST(SUBSTRING(enrolment_no, LENGTH(?)+1) AS UNSIGNED))
+        FROM admitted_students
+        WHERE programme_code = ?
+    ");
+    $cntActive->execute([$prefix, $prefix]);
+    $maxActive = (int)$cntActive->fetchColumn();
+
+    $cntWithdrawn = $pdo->prepare("
+        SELECT MAX(CAST(SUBSTRING(enrolment_no, LENGTH(?)+1) AS UNSIGNED))
+        FROM withdrawn_students
+        WHERE programme_code = ?
+    ");
+    $cntWithdrawn->execute([$prefix, $prefix]);
+    $maxWithdrawn = (int)$cntWithdrawn->fetchColumn();
+
+    $nextSerial = max($maxActive, $maxWithdrawn) + 1;
+    $stuSerial  = str_pad($nextSerial, 2, '0', STR_PAD_LEFT);
+    $enrolNo    = $prefix . $stuSerial;
 
     // ── 4. Decrement program_seats ───────────────────────────
     $pdo->prepare("UPDATE program_seats SET `$progCol` = `$progCol` - 1 WHERE exam_type = ? AND category = ?")
@@ -128,10 +169,10 @@ try {
             (uan_no, application_no, enrolment_no, cname, fathername, mothername,
              dob, gender, mobile, email, category, admitted_category, ews, obc_ncl,
              programme_type, department_code, department_name, programme_code,
-             programme_name, entrance_exam, ees, academic_year,
+             programme_name, entrance_exam, entrance_score, ees, academic_year,
              admitted_by, admitted_by_user_id, status, remarks)
         VALUES
-            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,'Admitted via Counselling')
+            (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,'Admitted via Counselling')
     ")->execute([
         $uanNo,
         $stu['application_no'],
@@ -153,6 +194,7 @@ try {
         $prefix,
         $progNames[$progCol] ?? $progCol,
         $examType,
+        $entranceScore ?: null,
         $stu['ees'],
         date('Y'),
         $_SESSION['username'],

@@ -143,8 +143,8 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
   </div>
   <nav class="sidebar-nav">
     <a href="../dashboard/home.php" class="nav-item">🏠 Dashboard</a>
-    <a href="hod_view.php" class="nav-item active">📌 HOD Review</a>
-    <a href="department_view.php" class="nav-item">🏢 Department View</a>
+    <a href="hod_view.php" class="nav-item active">👨‍💼 HOD Review</a>
+    <!--a href="department_view.php" class="nav-item">🏢 Department View</a-->
   </nav>
   <div class="sidebar-footer">
     <div class="user-badge">
@@ -242,6 +242,28 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
       </div>
     </div>
   </div>
+
+ 
+  <div style="display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#1E88E5,#1565C0);color:#fff;padding:25px 30px;border-radius:15px;border-left:8px solid #FFD54F;box-shadow:0 8px 20px rgba(0,0,0,.18);margin:20px 0;">
+
+    <div style="width:75px;height:75px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0;">
+        👤
+    </div>
+
+    <div style="flex:1;">
+        <div style="font-size:32px;font-weight:bold;letter-spacing:.5px;">
+            <?= htmlspecialchars($stu['cname']) ?>
+        </div>
+
+        <div style="margin-top:10px;font-size:20px;font-weight:500;">
+            Enrollment No :
+            <span style="font-size:24px;font-weight:bold;color:#FFE082;">
+                <?= htmlspecialchars($stu['enrolment_no']) ?>
+            </span>
+        </div>
+    </div>
+
+</div>
 
   <!-- HOD Review -->
   <div class="card">

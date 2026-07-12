@@ -99,7 +99,7 @@ tr:hover td{background:#fafbff;}
   </div>
   <nav class="sidebar-nav">
     <a href="../dashboard/home.php" class="nav-item">🏠 Dashboard</a>
-    <a href="department_view.php" class="nav-item active">🏢 Department View</a>
+    <a href="department_view.php" class="nav-item active">📝 Document Verification View</a>
   </nav>
   <div class="sidebar-footer">
     <div class="user-badge">
@@ -117,8 +117,8 @@ tr:hover td{background:#fafbff;}
 <main class="main">
   <div class="page-header">
     <div>
-      <div class="page-title">Department Review</div>
-      <div class="page-sub">Students admitted via counselling, awaiting department verification</div>
+      <div class="page-title">Document Verification Review</div>
+      <div class="page-sub">Students admitted via counselling, awaiting document verification</div>
     </div>
   </div>
 

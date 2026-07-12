@@ -3,7 +3,7 @@
 //  config/session.php  –  Session bootstrap
 //  Include at the top of every protected page.
 // ============================================================
-
+date_default_timezone_set('Asia/Kolkata');
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 0,

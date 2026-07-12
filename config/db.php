@@ -5,11 +5,11 @@
 // ============================================================
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'asu_portal');
+define('DB_NAME', 'asu_portal1');
 define('DB_USER', 'root');       // change to your MySQL username
 define('DB_PASS', '');           // change to your MySQL password
 define('DB_CHARSET', 'utf8mb4');
-
+date_default_timezone_set('Asia/Kolkata');
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {
