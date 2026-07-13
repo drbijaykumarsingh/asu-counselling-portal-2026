@@ -318,7 +318,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
   <div class="search-card">
     <h5>🔍 Search Student by Application Number (UAN)</h5>
     <div class="search-row">
-      <input type="text" id="uanInput" class="search-input" placeholder="Enter Application Number (e.g. APR26BTE21000xx)" maxlength="30" value="APR26">
+      <input type="text" id="uanInput" class="search-input" placeholder="Enter Application Number (e.g. APR26BTE21000xx)" maxlength="30" value="APR26DIP">
       <button class="btn-search" id="searchBtn" onclick="searchStudent()">Search</button>
     </div>
     <div class="alert-not-found" id="alertNotFound">

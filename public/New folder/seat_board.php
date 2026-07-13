@@ -153,8 +153,8 @@ body{
 }
 .board-header img{width:52px;height:52px;border-radius:50%;border:2.5px solid var(--gold);padding:2px;background:#fff;}
 .header-text{}
-.header-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:#fff;letter-spacing:2px;}
-.header-sub{font-size:11.5px;color:rgba(255,255,255,0.45);margin-top:2px;letter-spacing:1px;}
+.header-title{font-family:'Orbitron',sans-serif;font-size:25px;font-weight:900;color:#fff;letter-spacing:2px;}
+.header-sub{font-size:20px;white;margin-top:2px;letter-spacing:1px;}
 .header-right{margin-left:auto;text-align:right;}
 .exam-badge{
   display:inline-block;
@@ -168,7 +168,7 @@ body{
   letter-spacing:1px;
   text-transform:uppercase;
 }
-.timestamp{font-size:10.5px;color:rgba(255,255,255,0.3);margin-top:5px;letter-spacing:0.5px;}
+.timestamp{font-size:10.5px;color:white;margin-top:5px;letter-spacing:0.5px;}
 
 /* ── Table wrapper ── */
 .table-wrapper{
@@ -177,7 +177,6 @@ body{
   padding:20px 28px 24px;
   display:flex;
   flex-direction:column;
-  background:#f0f4f8;
 }
 
 /* ── Main table ── */
@@ -190,14 +189,14 @@ table{
 
 /* Header row */
 thead th{
-  background:#1a2a42;
+  background:var(--navy2);
   padding:12px 14px;
   font-size:11px;
   font-weight:700;
   letter-spacing:3px;
   text-transform:uppercase;
-  color:rgba(255,255,255,0.75);
-  border-bottom:2px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.45);
+  border-bottom:2px solid var(--border);
   white-space:nowrap;
   position:sticky;
   top:0;
@@ -209,41 +208,39 @@ thead th:first-child{
   max-width:260px;
   font-size:10px;
   letter-spacing:2px;
-  color:rgba(255,255,255,0.55);
-  border-right:1px solid rgba(255,255,255,0.1);
+  color:white;
+  border-right:1px solid var(--border);
   padding-left:18px;
 }
 thead th:not(:first-child){text-align:center;min-width:100px;}
 
 /* Category sub-header */
 .cat-label{font-size:13px;font-weight:800;color:#fff;letter-spacing:1px;}
-.cat-sub{font-size:9px;color:rgba(255,255,255,0.45);font-weight:500;margin-top:2px;letter-spacing:1.5px;}
+.cat-sub{font-size:9px;color:white;font-weight:500;margin-top:2px;letter-spacing:1.5px;}
 
 /* Body rows */
-tbody tr{background:#fff;transition:background .15s;}
-tbody tr:hover td{background:#eef2f8;}
-tbody tr:hover td:first-child{background:#eef2f8;}
-tbody tr:nth-child(even) td{background:#f7f9fc;}
-tbody tr:nth-child(even):hover td{background:#eef2f8;}
+tbody tr{transition:background .15s;}
+tbody tr:hover td{background:rgba(255,255,255,0.03);}
+tbody tr:hover td:first-child{background:rgba(255,255,255,0.03);}
 
 td{
   padding:10px 10px;
-  border-bottom:1px solid #dde3ec;
+  border-bottom:1px solid var(--border);
   text-align:center;
   vertical-align:middle;
 }
 td:first-child{
   text-align:left;
   padding-left:18px;
-  border-right:1px solid #dde3ec;
-  background:#fff;
+  border-right:1px solid var(--border);
+  background:var(--navy2);
   position:sticky;
   left:0;
   z-index:2;
 }
 
-.prog-name{font-size:13.5px;font-weight:700;color:#1a2a42;line-height:1.3;}
-.prog-type{font-size:10px;color:#8a95aa;margin-top:2px;letter-spacing:1px;text-transform:uppercase;}
+.prog-name{font-size:13.5px;font-weight:600;color:#fff;line-height:1.3;}
+.prog-type{font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px;letter-spacing:1px;text-transform:uppercase;}
 
 /* ── Seat cell ── */
 .seat-cell{
@@ -259,20 +256,20 @@ td:first-child{
   gap:2px;
 }
 .seat-cell.full{
-  background:rgba(229,62,62,0.1);
-  border-color:rgba(229,62,62,0.4);
+  background:var(--full-bg);
+  border-color:var(--full-border);
 }
 .seat-cell.available{
-  background:rgba(34,197,94,0.08);
-  border-color:rgba(34,197,94,0.35);
+  background:var(--avail-bg);
+  border-color:var(--avail-border);
 }
 .seat-cell.nearly-full{
-  background:rgba(245,158,11,0.1);
-  border-color:rgba(245,158,11,0.4);
+  background:var(--warn-bg);
+  border-color:var(--warn-border);
 }
 .seat-cell.zero{
   background:transparent;
-  border-color:rgba(0,0,0,0.08);
+  border-color:rgba(255,255,255,0.06);
 }
 
 .seat-fraction{
@@ -281,10 +278,10 @@ td:first-child{
   font-variant-numeric:tabular-nums;
   line-height:1;
 }
-.seat-cell.full .seat-fraction{color:#c0392b;}
-.seat-cell.available .seat-fraction{color:#1a7a40;}
-.seat-cell.nearly-full .seat-fraction{color:#b45309;}
-.seat-cell.zero .seat-fraction{color:#b0b8cc;font-size:13px;}
+.seat-cell.full .seat-fraction{color:white;}
+.seat-cell.available .seat-fraction{color:white;}
+.seat-cell.nearly-full .seat-fraction{color:white;}
+.seat-cell.zero .seat-fraction{color:rgba(255,255,255,0.15);font-size:13px;}
 
 .seat-label{
   font-size:8.5px;
@@ -293,22 +290,22 @@ td:first-child{
   text-transform:uppercase;
   margin-top:2px;
 }
-.seat-cell.full .seat-label{color:#c0392b;}
-.seat-cell.available .seat-label{color:#1a7a40;}
-.seat-cell.nearly-full .seat-label{color:#b45309;}
-.seat-cell.zero .seat-label{color:#b0b8cc;}
+.seat-cell.full .seat-label{color:white;}
+.seat-cell.available .seat-label{color:white;}
+.seat-cell.nearly-full .seat-label{color:white;}
+.seat-cell.zero .seat-label{color:white;}
 
 /* ── Totals row ── */
 .totals-row td{
-  background:#e8f0fe;
-  border-top:2px solid #3a6ea8;
+  background:rgba(201,150,42,0.06);
+  border-top:2px solid rgba(201,150,42,0.2);
   border-bottom:none;
   padding:12px 10px;
 }
 .totals-row td:first-child{
-  font-size:11px;font-weight:700;color:#1a2a42;
+  font-size:11px;font-weight:700;color:var(--gold2);
   letter-spacing:2px;text-transform:uppercase;
-  background:#dce8fb;
+  background:rgba(201,150,42,0.08);
 }
 
 /* ── Legend ── */
@@ -330,7 +327,7 @@ td:first-child{
 .legend-right{margin-left:auto;font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:1px;}
 
 /* Countdown ring */
-.countdown-ring{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,0.3);font-size:11px;}
+.countdown-ring{display:inline-flex;align-items:center;gap:6px;color:white;font-size:11px;}
 #countdown{color:var(--gold);font-weight:700;}
 </style>
 </head>
@@ -436,10 +433,12 @@ td:first-child{
 
 <!-- Legend + countdown -->
 <div class="legend">
+  <!--
   <div class="legend-item"><div class="legend-dot avail"></div> Seats Available</div>
   <div class="legend-item"><div class="legend-dot warn"></div> Limited (&lt;25% left)</div>
   <div class="legend-item"><div class="legend-dot full"></div> Fully Filled</div>
   <div class="legend-item"><div class="legend-dot zero"></div> Not Applicable</div>
+      -->
   <div class="legend-right">
     <div class="countdown-ring">🔄 Refreshes in <span id="countdown"><?= $refreshSec ?></span>s</div>
   </div>

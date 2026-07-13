@@ -43,7 +43,7 @@ $menuItems = [
     ['icon' => '🔁', 'label' => 'Update Available Seats',  'desc' => 'Update seats program / category wise',  'url' => '../admin/update_seats.php',   'roles' => ['super_admin']],
     ['icon' => '🪑', 'label' => 'Seat Management',  'desc' => 'Configure & update seat matrix',        'url' => '../admin/seat_management.php',             'roles' => ['super_admin']],
     
-    ['icon' => '📊', 'label' => 'Seat Display',     'desc' => 'Public-facing live seat availability',  'url' => '../public/seat_display.php',                'roles' => ['super_admin','system_admin','counsellor','department']],
+    ['icon' => '📊', 'label' => 'Seat Display',     'desc' => 'Public-facing live seat availability',  'url' => '../public/seat_display.php',                'roles' => ['super_admin','system_admin','counsellor','department','hod']],
     ['icon' => '👥', 'label' => 'Manage Users',     'desc' => 'Add, edit, and manage portal users',    'url' => '../admin/manage_users.php',      'roles' => ['super_admin']],
     ['icon' => '🔄', 'label' => 'Seat Transfer',  'desc' => 'Transfer seat across entrance exam/category',  'url' => '../admin/seat_transfer.php',          'roles' => ['super_admin']],
     ['icon' => '⬆️', 'label' => 'Upload Students',  'desc' => 'Import applicant data from Excel/CSV',  'url' => '../admin/upload_students.php',   'roles' => ['super_admin','system_admin']],
@@ -562,7 +562,7 @@ $menuItems = [
   </div>
 
   <div class="page-footer">
-    Assam Skill University &copy; <?= date('Y') ?> &nbsp;|&nbsp; Admission &amp; Student Management Portal &nbsp;|&nbsp; Academic Year 2025–26
+    Assam Skill University &copy; <?= date('Y') ?> &nbsp;|&nbsp; Admission &amp; Student Management Portal &nbsp;|&nbsp; Academic Year 2026–27
   </div>
 
 </main>
