@@ -36,6 +36,7 @@ $deptProgMap = [
         'int_btech_mech_cadcam' => 'Integrated B.Tech Mechanical (CAD-CAM)',
     ]],
     'EE' => ['label' => 'Electrical Engineering', 'programmes' => [
+        'btech_ee'   =>  'B.Tech Electrical Engineering',
         'dip_elec_ev' => 'Diploma in Electrical Engineering & EV',
     ]],
     'EC' => ['label' => 'Electronics', 'programmes' => [

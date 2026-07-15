@@ -58,6 +58,7 @@ $sql = "
         a.id,
         a.uan_no,
         a.cname,
+        a.enrolment_no,
         a.programme_name,
         a.department_name,
         a.admitted_category,
@@ -579,6 +580,7 @@ $roleColor = match($role) {
           <tr>
             <th>UAN No.</th>
             <th>Name</th>
+            <th>Enrolment No</th>
             <th>Programme</th>
             <th>Department</th>
             <th>Category</th>
@@ -622,6 +624,7 @@ $roleColor = match($role) {
           <tr>
             <td><span class="uan-pill"><?= htmlspecialchars($s['uan_no']) ?></span></td>
             <td><strong><?= htmlspecialchars($s['cname']) ?></strong></td>
+             <td><strong><?= htmlspecialchars($s['enrolment_no']) ?></strong></td>
             <td><?= htmlspecialchars($s['programme_name']) ?></td>
             <td><?= htmlspecialchars($s['department_name']) ?></td>
             <td><span class="cat-badge"><?= htmlspecialchars($s['admitted_category']) ?></span></td>

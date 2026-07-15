@@ -20,7 +20,7 @@ if (empty($_SESSION['user_id']) || !in_array($_SESSION['role'], ['super_admin','
 }
 
 $allowedCols = [
-    'btech_cse_aiml','btech_cse_cyber','btech_ece','btech_civil',
+    'btech_cse_aiml','btech_cse_cyber','btech_ece','btech_civil','btech_ee',
     'lat_cse_aiml','lat_cse_cyber','lat_civil',
     'int_btech_mech_cadcam','dip_elec_eng','dip_elec_ev',
     'mtech_it_aiml','mtech_ece_vlsi','mtech_ece_wireless','mtech_civil_const',

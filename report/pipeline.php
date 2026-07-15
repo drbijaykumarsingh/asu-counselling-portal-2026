@@ -134,7 +134,7 @@ tr:hover td{background:#fafbff;}
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>#</th><th>Name</th><th>UAN</th><th>Programme</th><th>Department</th><th>Category</th><th>Stage</th><th>Counselled On</th>
+          <th>#</th><th>Name</th><th>UAN</th><th>Enrolment No.</th><th>Programme</th><th>Department</th><th>Category</th><th>Stage</th><th>Counselled On</th>
         </tr></thead>
         <tbody>
           <?php if(empty($students)): ?>
@@ -148,6 +148,7 @@ tr:hover td{background:#fafbff;}
             <td style="color:#aab0c0;font-size:12px"><?= $i+1 ?></td>
             <td><strong><?= htmlspecialchars($s['cname']) ?></strong></td>
             <td style="font-family:monospace;font-size:12px;color:#3a6ea8"><?= htmlspecialchars($s['uan_no']) ?></td>
+            <td style="font-size:12.5px"><?= htmlspecialchars($s['enrolment_no']) ?></td>
             <td style="font-size:12.5px"><?= htmlspecialchars($s['programme_name']) ?></td>
             <td style="font-size:12.5px"><?= htmlspecialchars($s['department_name']) ?></td>
             <td><span class="cat-badge"><?= htmlspecialchars($s['admitted_category']) ?></span></td>

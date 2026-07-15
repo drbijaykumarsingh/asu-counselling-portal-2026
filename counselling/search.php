@@ -12,6 +12,8 @@ if (!in_array($_SESSION['role'], ['super_admin','counsellor'])) {
 
 // Validate programme type from GET
 $progType = $_GET['prog_type'] ?? '';
+
+
 $programmeTypes = [
     'D'  => 'Diploma',
     'I'  => 'Integrated B.Tech',
@@ -20,8 +22,8 @@ $programmeTypes = [
     'M'  => 'Master of Technology (M.Tech)',
     'PB' => 'Bachelor of Business Administration (BBA)',
     'PM' => 'Master of Business Administration (MBA)',
-    'T'  => 'Bachelor of Tourism & Travel Management (BTTM)',
-    'FT' => 'Bachelor of Food Technology',
+    'T'  => 'FYIPGP of Travel & Tourism Management (BTTM + MTTM)',
+    'FT' => 'FYIPGP of Food Technology',
     'MT' => 'Master of Tourism & Travel Management (MTTM)',
 ];
 if (!array_key_exists($progType, $programmeTypes)) {
@@ -77,21 +79,21 @@ $deptProgMap = [
     'FT' => [
         'label' => 'Food Technology',
         'programmes' => [
-            'fyimp_food_tech' => 'FYIMP – Integrated Food Technology',
+            'fyimp_food_tech' => 'FYIMP of Food Technology',
         ],
     ],
-    'MG' => [
+    'AM' => [
         'label' => 'Applied Management',
         'programmes' => [
             'mba' => 'Master of Business Administration (MBA)',
             'bba' => 'Bachelor of Business Administration (BBA)',
         ],
     ],
-    'TT' => [
+    'TM' => [
         'label' => 'Tourism',
         'programmes' => [
-            'fyimp_travel_tour' => 'FYIMP – Integrated Travel & Tourism Management',
-            'mttm'              => 'Master of Tourism & Travel Management (MTTM)',
+            'fyimp_travel_tour' => 'FYIMP of Travel & Tourism Management (BTTM + MTTM)',
+            'mttm'              => 'Master of Travel & Tourism Management (MTTM)',
         ],
     ],
 ];
@@ -318,7 +320,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
   <div class="search-card">
     <h5>🔍 Search Student by Application Number (UAN)</h5>
     <div class="search-row">
-      <input type="text" id="uanInput" class="search-input" placeholder="Enter Application Number (e.g. APR26BTE21000xx)" maxlength="30" value="APR26DIP">
+      <input type="text" id="uanInput" class="search-input" placeholder="Enter Application Number (e.g. APR26BTE21000xx)" maxlength="30" value="APR26">
       <button class="btn-search" id="searchBtn" onclick="searchStudent()">Search</button>
     </div>
     <div class="alert-not-found" id="alertNotFound">
@@ -727,7 +729,8 @@ function admitStudent() {
     admitted_cat:     document.getElementById('fAdmittedCat').value,
     ews:              document.getElementById('fEws')?.value    || '',
     obc_ncl:          document.getElementById('fObcNcl')?.value || '',
-    prog_type:        '<?= addslashes($progType) ?>',
+    prog_type: '<?= ($progType == "PB") ? "B" : (($progType == "PM" || $progType == "T" || $progType == "FT" || $progType == "MT") ? "M" : addslashes($progType)) ?>',
+   
     prev_admitted_id: currentStudent._prevAdmittedId || 0,
   };
 

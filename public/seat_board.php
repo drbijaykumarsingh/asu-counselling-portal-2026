@@ -11,7 +11,7 @@ $allowedCols = [
     'btech_cse_cyber'       => 'B.Tech CSE (Cyber Security)',
     'btech_ece'             => 'B.Tech ECE',
     'btech_civil'           => 'B.Tech Civil Engineering',
-    'btech_ee'              => 'B.Tech Electrical',
+    'btech_ee'              => 'B.Tech Electrical Engineering (EV)',
     'lat_cse_aiml'          => 'Lateral B.Tech CSE (AI-ML)',
     'lat_cse_cyber'         => 'Lateral B.Tech CSE (Cyber)',
     'lat_civil'             => 'Lateral B.Tech Civil',
@@ -153,18 +153,18 @@ body{
 }
 .board-header img{width:52px;height:52px;border-radius:50%;border:2.5px solid var(--gold);padding:2px;background:#fff;}
 .header-text{}
-.header-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:#fff;letter-spacing:2px;}
-.header-sub{font-size:11.5px;color:rgba(255,255,255,0.45);margin-top:2px;letter-spacing:1px;}
+.header-title{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:2px;}
+.header-sub{font-size:15px;color:white;margin-top:2px;letter-spacing:1px;}
 .header-right{margin-left:auto;text-align:right;}
 .exam-badge{
   display:inline-block;
   background:rgba(201,150,42,0.15);
   border:1px solid rgba(201,150,42,0.4);
-  color:var(--gold2);
-  padding:5px 16px;
-  border-radius:20px;
-  font-size:11.5px;
-  font-weight:700;
+  color:white;
+  padding:5px 10px;
+  border-radius:25px;
+  font-size:25px;
+  font-weight:900;
   letter-spacing:1px;
   text-transform:uppercase;
 }
@@ -216,7 +216,7 @@ thead th:first-child{
 thead th:not(:first-child){text-align:center;min-width:100px;}
 
 /* Category sub-header */
-.cat-label{font-size:13px;font-weight:800;color:#fff;letter-spacing:1px;}
+.cat-label{font-size:35px;font-weight:800;color:#fff;letter-spacing:1px;}
 .cat-sub{font-size:9px;color:rgba(255,255,255,0.45);font-weight:500;margin-top:2px;letter-spacing:1.5px;}
 
 /* Body rows */
@@ -242,7 +242,7 @@ td:first-child{
   z-index:2;
 }
 
-.prog-name{font-size:13.5px;font-weight:700;color:#1a2a42;line-height:1.3;}
+.prog-name{font-size:30px;font-weight:700;color:black;line-height:1.3;}
 .prog-type{font-size:10px;color:#8a95aa;margin-top:2px;letter-spacing:1px;text-transform:uppercase;}
 
 /* ── Seat cell ── */
@@ -276,7 +276,7 @@ td:first-child{
 }
 
 .seat-fraction{
-  font-size:17px;
+  font-size:35px;
   font-weight:800;
   font-variant-numeric:tabular-nums;
   line-height:1;
@@ -306,7 +306,7 @@ td:first-child{
   padding:12px 10px;
 }
 .totals-row td:first-child{
-  font-size:11px;font-weight:700;color:#1a2a42;
+  font-size:35px;font-weight:700;color:#1a2a42;
   letter-spacing:2px;text-transform:uppercase;
   background:#dce8fb;
 }
