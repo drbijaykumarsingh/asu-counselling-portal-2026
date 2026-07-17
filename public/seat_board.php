@@ -18,20 +18,20 @@ $allowedCols = [
     'int_btech_mech_cadcam' => 'Int. B.Tech Mech (CAD-CAM)',
     'dip_elec_eng'          => 'Diploma – Electronics Engg',
     'dip_elec_ev'           => 'Diploma – Electrical & EV',
-    'mtech_it_aiml'         => 'M.Tech IT (AI & ML)',
+    'mtech_it_aiml'         => 'M.Tech CSE (AI & ML)',
     'mtech_ece_vlsi'        => 'M.Tech ECE (VLSI)',
     'mtech_ece_wireless'    => 'M.Tech ECE (Wireless)',
     'mtech_civil_const'     => 'M.Tech Civil (Construction)',
     'pgdip_aiml'            => 'PG Diploma – AI & ML',
     'pgdip_const_tech'      => 'PG Diploma – Construction',
-    'fyimp_food_tech'       => 'FYIMP – Food Technology',
-    'fyimp_travel_tour'     => 'FYIMP – Travel & Tourism',
+    'fyimp_food_tech'       => 'FYIPGP – Food Technology',
+    'fyimp_travel_tour'     => 'FYIPGP – Travel & Tourism',
     'mttm'                  => 'MTTM',
     'mba'                   => 'MBA',
     'bba'                   => 'BBA',
 ];
 
-$allowedExams = ['CEE','JEE','ASUEE','NONE'];
+$allowedExams = ['CEE','JEE','ASUEE','GATE', 'NONE'];
 $categories   = ['UR','OBC/MOBC','SC','STP','STH','PwD','EWS'];
 
 // Validate inputs

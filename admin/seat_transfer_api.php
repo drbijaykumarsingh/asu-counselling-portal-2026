@@ -27,7 +27,7 @@ $allowedCols = [
     'pgdip_aiml','pgdip_const_tech',
     'fyimp_food_tech','fyimp_travel_tour','mttm','mba','bba',
 ];
-$allowedExams = ['CEE','JEE','ASUEE','NONE'];
+$allowedExams = ['CEE','JEE','ASUEE','GATE','NONE'];
 $allowedCats  = ['UR','OBC/MOBC','SC','STP','STH','PwD','EWS'];
 
 $pdo    = getDB();

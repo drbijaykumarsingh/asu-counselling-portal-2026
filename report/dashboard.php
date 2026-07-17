@@ -91,7 +91,7 @@ $stmt = $pdo->query("
     WHERE status = 5 
     GROUP BY programme_name 
     ORDER BY count DESC 
-    LIMIT 10
+    LIMIT 20
 ");
 $programDistribution = $stmt->fetchAll();
 
@@ -597,7 +597,23 @@ $showPendingAllotment = in_array($role, ['super_admin', 'system_admin']);
       <div class="card-label">Rejected Students</div>
       <div class="card-sub">Status: -1, -2, -3, -4 </div>
     </a>
+<a href="../report/admission_widget.php" class="dash-card">
+      <div class="card-icon">🎓</div>
+      <div class="card-value orange"></div>
+      <div class="card-label">Admission Widget</div>
+    </a>
+    <a href="../report/admission_finance.php" class="dash-card">
+      <div class="card-icon">🎓</div>
+      <div class="card-value orange"></div>
+      <div class="card-label">Master details</div>
+    </a>
+<a href="../report/program_wise_count.php" class="dash-card">
+      <div class="card-icon">🎓</div>
+      <div class="card-value orange"></div>
+      <div class="card-label">Counting</div>
+    </a>
 
+    
   </div>
 
   <!-- ── Charts Section ── -->

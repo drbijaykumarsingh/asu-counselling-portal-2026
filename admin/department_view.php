@@ -166,6 +166,12 @@ tr:hover td{background:#fafbff;}
       </table>
     </div>
   </div>
+  <iframe
+    src="../report/admission_widget.php"  
+    width="100%"
+    height="500"
+    style="border:none;">
+</iframe>
 </main>
 
 </body>

@@ -58,7 +58,7 @@ $deptProgMap = [
     ]],
 ];
 
-$examTypes  = ['CEE', 'JEE', 'ASUEE', 'NONE'];
+$examTypes  = ['CEE', 'JEE', 'ASUEE','GATE' ,'NONE'];
 $categories = ['UR', 'OBC/MOBC', 'SC', 'STP', 'STH', 'PwD', 'EWS'];
 ?>
 <!DOCTYPE html>

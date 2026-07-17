@@ -95,14 +95,14 @@ $progExamTypes = [
     'int_btech_mech_cadcam'=>['NONE'],
     'dip_elec_eng'=>['NONE'],
     'dip_elec_ev'=>['NONE'],
-    'mtech_it_aiml'=>['ASUEE'],
-    'mtech_ece_vlsi'=>['ASUEE'],
-    'mtech_ece_wireless'=>['ASUEE'],
-    'mtech_civil_const'=>['ASUEE'],
+    'mtech_it_aiml'=>['ASUEE', 'GATE'],
+    'mtech_ece_vlsi'=>['ASUEE', 'GATE'],
+    'mtech_ece_wireless'=>['ASUEE', 'GATE'],
+    'mtech_civil_const'=>['ASUEE', 'GATE'],
     'pgdip_aiml'=>['ASUEE'],
     'pgdip_const_tech'=>['ASUEE'],
-    'fyimp_food_tech'=>['NONE'],
-    'fyimp_travel_tour'=>['NONE'],
+    'fyimp_food_tech'=>['ASUEE'],
+    'fyimp_travel_tour'=>['ASUEE'],
     'mttm'=>['ASUEE'],
     'mba'=>['ASUEE'],
     'bba'=>['ASUEE'],
@@ -369,7 +369,7 @@ const progExamTypes = <?= json_encode($progExamTypes) ?>;
 const categories    = <?= json_encode($categories) ?>;
 const seatData      = <?= json_encode($seatData) ?>;
 const CAT_CLASSES   = {UR:'ch-UR','OBC/MOBC':'ch-OBC',SC:'ch-SC',STP:'ch-STP',STH:'ch-STH',PwD:'ch-PwD',EWS:'ch-EWS'};
-const EXAM_LABELS   = {CEE:'CEE',JEE:'JEE',ASUEE:'ASUEE',NONE:'No Exam'};
+const EXAM_LABELS   = {CEE:'CEE',JEE:'JEE',ASUEE:'ASUEE',GATE:'GATE',NONE:'No Exam'};
 
 let originalValues = {}; // key: exam|cat|col → original value
 let currentProg    = null;

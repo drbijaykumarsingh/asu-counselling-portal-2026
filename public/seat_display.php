@@ -131,6 +131,7 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0B2545 0%
     <div class="exam-chip"><input type="radio" name="exam" id="eCEE" value="CEE"><label for="eCEE">CEE</label></div>
     <div class="exam-chip"><input type="radio" name="exam" id="eJEE" value="JEE"><label for="eJEE">JEE</label></div>
     <div class="exam-chip"><input type="radio" name="exam" id="eASUEE" value="ASUEE"><label for="eASUEE">ASUEE</label></div>
+    <div class="exam-chip"><input type="radio" name="exam" id="eGATE" value="GATE"><label for="eGATE">GATE</label></div>
     <div class="exam-chip"><input type="radio" name="exam" id="eNONE" value="NONE"><label for="eNONE">None (Diploma / Int. B.Tech)</label></div>
      </div>
 

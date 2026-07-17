@@ -18,7 +18,7 @@ $stmt = $pdo->query("
     FROM admitted_students
     WHERE status IN (1,2,3,4,5)
     ORDER BY admission_date DESC
-    LIMIT 10
+    LIMIT 20
 ");
 
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -39,7 +39,7 @@ $stmt = $pdo->query("
     FROM admitted_students
     WHERE status IN (1,2,3,4,5)
     ORDER BY admission_date DESC
-    LIMIT 10
+    LIMIT 20
 ");
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

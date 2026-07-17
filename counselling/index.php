@@ -170,7 +170,11 @@ body { font-family:'Inter',sans-serif; background:#f0f2f7; min-height:100vh; dis
       </div>
     </div>
   </div>
-      <iframe src="../report/admission_widget.php" width="100%" height="500" style="border:none;">
+  <iframe
+    src="../report/admission_widget.php"  
+    width="100%"
+    height="500"
+    style="border:none;">
 </iframe>
 </main>
 

@@ -276,6 +276,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
       <button class="btn-reject" id="btnReject" onclick="submitDecision('reject')" <?= $alreadyProcessed ? 'disabled' : '' ?>>✕ Reject</button>
     </div>
   </div>
+  
 </main>
 
 <script>

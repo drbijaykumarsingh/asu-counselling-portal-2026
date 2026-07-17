@@ -79,7 +79,7 @@ $progSerial = [
     'mtech_it_aiml'=>'01','mtech_ece_vlsi'=>'01','mtech_ece_wireless'=>'02','mtech_civil_const'=>'01',
     'pgdip_aiml'=>'01','pgdip_const_tech'=>'01',
     'fyimp_food_tech'=>'01','fyimp_travel_tour'=>'01',
-    'mttm'=>'01','mba'=>'01','bba'=>'01',
+    'mttm'=>'02','mba'=>'01','bba'=>'01',
 ];
 
 $pdo = getDB();

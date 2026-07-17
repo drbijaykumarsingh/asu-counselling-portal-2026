@@ -61,15 +61,15 @@ $deptProgMap = [
     'EE' => [
         'label' => 'Electrical Engineering',
         'programmes' => [
-            'dip_elec_ev' => 'Diploma in Electrical Engineering & EV',
+            'btech_ee'          => 'B.Tech Electrical Engineering',
+            'dip_elec_ev'       => 'Diploma in Electrical Engineering & EV',
         ],
     ],
     'EC' => [
         'label' => 'Electronics',
         'programmes' => [
-            'btech_ece_vlsi'    => 'B.Tech ECE (VLSI Design)',
-            'btech_ece_comm'    => 'B.Tech ECE (Communication & Networks)',
-            'dip_elec_eng'      => 'Diploma in Electronics Engineering',
+            'btech_ece'    => 'B.Tech ECE',
+            'dip_elec_eng'      => 'Diploma in Electronics',
             'mtech_ece_vlsi'    => 'M.Tech ECE (VLSI Design)',
             'mtech_ece_wireless'=> 'M.Tech ECE (Wireless Communication & Networks)',
         ],
@@ -127,14 +127,40 @@ foreach ($deptProgMap as $code => $dept) {
     }
 }
 
-// Entrance exams – CEE & JEE only for BTech
-$isBtech = ($progType === 'B');
-$examOptions = $isBtech
-    ? ['CEE' => 'CEE (Combined Entrance Examination)', 'JEE' => 'JEE (Joint Entrance Examination)', 'ASUEE' => 'ASUEE (ASU Entrance Examination)']
-    : ['ASUEE' => 'ASUEE (ASU Entrance Examination)'];
+// Entrance exam options per programme type
+// Diploma (D) and Integrated B.Tech (I) have NO entrance exam – field hidden entirely
+$noExamProgram = in_array($progType, ['D', 'I'], true);
+
+$examOptionsMap = [
+    'B'  => ['CEE'   => 'CEE (Combined Entrance Examination)',
+              'JEE'   => 'JEE (Joint Entrance Examination)',
+              'ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'NONE'  => 'None'],
+    'L'  => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'NONE'  => 'None'],
+    'M'  => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'GATE'  => 'GATE (Graduate Aptitude Test in Engineering)',
+              'NONE'  => 'None'],
+    'PM' => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'CAT'   => 'CAT (Common Admission Test)',
+              'GMAT'  => 'GMAT (Graduate Management Admission Test)',
+              'MAT'   => 'MAT (Management Aptitude Test)',
+              'NONE'  => 'None'],
+    'PB' => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'NONE'  => 'None'],
+    'MT' => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'NONE'  => 'None'],
+    'T'  => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'NONE'  => 'None'],
+    'FT' => ['ASUEE' => 'ASUEE (ASU Entrance Examination)',
+              'NONE'  => 'None'],
+    'D'  => [],   // hidden
+    'I'  => [],   // hidden
+];
+$examOptions = $noExamProgram ? [] : ($examOptionsMap[$progType] ?? ['ASUEE' => 'ASUEE (ASU Entrance Examination)', 'NONE' => 'None']);
 
 // Categories
-$categories = ['UR' => 'General / Unreserved (UR)', 'OBC/MOBC' => 'OBC / MOBC', 'SC' => 'Scheduled Caste (SC)', 'STH' => 'Scheduled Tribe Hills (STH)', 'STP' => 'Scheduled Tribe Plains (STP)', 'DA' => 'Differently Abled (DA)'];
+$categories = ['UR' => 'General / Unreserved (UR)', 'OBC/MOBC' => 'OBC / MOBC', 'SC' => 'Scheduled Caste (SC)', 'STH' => 'Scheduled Tribe Hills (STH)', 'STP' => 'Scheduled Tribe Plains (STP)', 'PwD' => 'Person with Disability (PwD)'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -189,6 +215,8 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
 
 /* Alert boxes */
 .alert-not-found{display:none;padding:14px 18px;border-radius:10px;background:#fff0f0;border:1px solid #ffc0c0;color:#8b2020;font-size:14px;margin-top:12px;}
+.alert-already-admitted{display:none;padding:14px 18px;border-radius:10px;background:#fff8e6;border:1px solid #f5c842;color:#7a5a10;font-size:14px;margin-top:12px;font-weight:500;}
+.alert-readmission{display:none;padding:14px 18px;border-radius:10px;background:#eef3ff;border:1px solid #a0b8f5;color:#1a3a8b;font-size:14px;margin-top:12px;font-weight:500;}
 .alert-no-seat{display:none;padding:14px 18px;border-radius:10px;background:#fff8e6;border:1px solid #f5c842;color:#7a5a10;font-size:14px;margin-top:12px;}
 
 /* Student info card */
@@ -208,6 +236,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
 .field-label{font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:#8a95aa;}
 .field-value{font-size:14px;color:#1a2a42;font-weight:500;padding:8px 0;border-bottom:1.5px solid #f0f2f7;}
 .field-value.empty{color:#b0b8cc;font-style:italic;}
+.score-value{color:#0B2545;font-weight:700;font-size:15px;letter-spacing:0.02em;}
 
 /* Editable fields (dropdowns/inputs) */
 .field-select,.field-input{
@@ -293,7 +322,13 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
       <button class="btn-search" id="searchBtn" onclick="searchStudent()">Search</button>
     </div>
     <div class="alert-not-found" id="alertNotFound">
-      ❌ No student found with this UAN. Please verify the UAN number and try again.
+      ❌ Student does not exist in the database.
+    </div>
+    <div class="alert-already-admitted" id="alertAlreadyAdmitted">
+      ⚠️ This student has already been admitted.
+    </div>
+    <div class="alert-readmission" id="alertReadmission">
+      🔄 Readmission in progress.
     </div>
   </div>
 
@@ -321,10 +356,29 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
         <div class="field-group"><div class="field-label">Email Address</div><div class="field-value" id="fEmail"></div></div>
       </div>
 
+      <!-- Entrance Scores (populated dynamically, hidden when empty) -->
+      <div id="scoresSection" style="display:none">
+        <div class="section-title">Entrance Exam Scores</div>
+        <div class="fields-grid" id="scoresGrid"></div>
+      </div>
+
       <!-- Category -->
       <div class="section-title">Category & Reservation</div>
       <div class="fields-grid">
         <div class="field-group"><div class="field-label">Applied Category</div><div class="field-value" id="fCategory"></div></div>
+        <div class="field-group">
+          <div class="field-label">Admitted Under Category</div>
+          <select class="field-select" id="fAdmittedCat" onchange="onAdmittedCatChange()">
+            <option value="">— Select Admitted Category —</option>
+            <option value="UR">General / Unreserved (UR)</option>
+            <option value="OBC/MOBC">OBC / MOBC</option>
+            <option value="SC">Scheduled Caste (SC)</option>
+            <option value="STH">Scheduled Tribe Hills (STH)</option>
+            <option value="STP">Scheduled Tribe Plains (STP)</option>
+            <option value="PwD">Person with Disability (PwD)</option>
+            <option value="EWS">Economically Weaker Section (EWS)</option>
+          </select>
+        </div>
         <div class="field-group" id="ewsGroup" style="display:none">
           <div class="field-label">EWS (Economically Weaker Section)</div>
           <select class="field-select" id="fEws">
@@ -341,35 +395,29 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
             <option value="NO">No</option>
           </select>
         </div>
-        <div class="field-group">
-          <div class="field-label">Admitted Under Category</div>
-          <select class="field-select" id="fAdmittedCat" onchange="onAdmittedCatChange()">
-            <option value="">— Select Admitted Category —</option>
-            <option value="UR">General / Unreserved (UR)</option>
-            <option value="OBC/MOBC">OBC / MOBC</option>
-            <option value="SC">Scheduled Caste (SC)</option>
-            <option value="STH">Scheduled Tribe Hills (STH)</option>
-            <option value="STP">Scheduled Tribe Plains (STP)</option>
-            <option value="DA">Differently Abled (DA)</option>
-            <option value="EWS">Economically Weaker Section (EWS)</option>
-          </select>
-        </div>
       </div>
 
+      <?php if (!$noExamProgram): ?>
       <!-- Entrance Exam -->
       <div class="section-title">Entrance Examination</div>
       <div class="fields-grid">
         <div class="field-group"><div class="field-label">Exam(s) Appeared (from application)</div><div class="field-value" id="fEes"></div></div>
         <div class="field-group">
           <div class="field-label">Entrance Exam for Admission</div>
-          <select class="field-select" id="fExamType" onchange="checkSeats()">
+          <select class="field-select" id="fExamType" onchange="onExamTypeChange()">
             <option value="">— Select Exam —</option>
             <?php foreach ($examOptions as $val => $lbl): ?>
             <option value="<?= $val ?>"><?= htmlspecialchars($lbl) ?></option>
             <?php endforeach; ?>
           </select>
+          <div id="examScoreDisplay" style="display:none;margin-top:7px;padding:8px 12px;background:#eef3ff;border:1px solid #a0b8f5;border-radius:8px;font-size:13px;color:#1a3a8b;font-weight:600;"></div>
         </div>
       </div>
+      <?php else: ?>
+      <!-- No entrance exam for Diploma / Integrated B.Tech -->
+      <input type="hidden" id="fExamType" value="NONE">
+      <span id="fEes" style="display:none"></span>
+      <?php endif; ?>
 
       <!-- Department & Programme -->
       <div class="section-title">Department & Programme</div>
@@ -420,59 +468,69 @@ body{font-family:'Inter',sans-serif;background:#f0f2f7;min-height:100vh;display:
 <script>
 // Dept → programme map from PHP
 const deptProgMap = <?= json_encode(array_map(fn($d) => $d['programmes'], $filteredDepts)) ?>;
+
+// Maps exam type → { scoreField, yearField, label } in the students table
+const examScoreMap = {
+  'CEE':  { field: 'cee_score',   year: null,         label: 'CEE Score'  },
+  'JEE':  { field: 'jee_score',   year: null,         label: 'JEE Score'  },
+  'ASUEE':{ field: 'asuee_score', year: null,         label: 'ASUEE Score'},
+  'GATE': { field: 'gate_score',  year: 'gate_year',  label: 'GATE Score' },
+  'CAT':  { field: 'cat_score',   year: 'cat_year',   label: 'CAT Score'  },
+  'GMAT': { field: 'gmat_score',  year: 'gmat_year',  label: 'GMAT Score' },
+  'MAT':  { field: 'mat_score',   year: 'mat_year',   label: 'MAT Score'  },
+  'NLM':  { field: 'nlm_score',   year: 'nlm_year',   label: 'NLM Score'  },
+  'NONE': null,
+};
+
 let currentStudent = null;
 
 // ── Search ────────────────────────────────────────────────────
 function searchStudent() {
-    const uan = document.getElementById('uanInput').value.trim();
-    if (!uan) return;
+  const uan = document.getElementById('uanInput').value.trim();
+  if (!uan) return;
 
-    const btn = document.getElementById('searchBtn');
-    btn.disabled = true;
-    btn.textContent = 'Searching...';
+  const btn = document.getElementById('searchBtn');
+  btn.textContent = 'Searching…'; btn.disabled = true;
+  document.getElementById('alertNotFound').style.display = 'none';
+  document.getElementById('alertAlreadyAdmitted').style.display = 'none';
+  document.getElementById('alertReadmission').style.display = 'none';
+  document.getElementById('studentCard').style.display = 'none';
 
-    document.getElementById('alertNotFound').style.display = 'none';
-    document.getElementById('studentCard').style.display = 'none';
-
-    fetch('fetch_student.php?uan=' + encodeURIComponent(uan))
-        .then(async response => {
-            const text = await response.text();
-
-            console.log(text);
-
-            try {
-                return JSON.parse(text);
-            } catch(e) {
-                alert("Server returned:\n\n" + text);
-                throw e;
-            }
-        })
-        .then(data => {
-
-            btn.disabled = false;
-            btn.textContent = 'Search';
-
-            if (!data.found) {
-                document.getElementById('alertNotFound').style.display = 'block';
-                return;
-            }
-
-            populateStudent(data.student);
-
-        })
-        .catch(err => {
-            console.error(err);
-
-            btn.disabled = false;
-            btn.textContent = 'Search';
-        });
+  fetch('fetch_student.php?uan=' + encodeURIComponent(uan))
+    .then(r => r.json())
+    .then(data => {
+      btn.textContent = 'Search'; btn.disabled = false;
+      if (!data.found) {
+        if (data.already_admitted) {
+          const enrol = data.enrolment_no ? ` (Enrolment No: <strong>${data.enrolment_no}</strong>)` : '';
+          document.getElementById('alertAlreadyAdmitted').innerHTML =
+            '⚠️ This student has already been admitted / is in the admission pipeline.' + enrol;
+          document.getElementById('alertAlreadyAdmitted').style.display = 'block';
+        } else {
+          document.getElementById('alertNotFound').textContent = '❌ Student does not exist in the database.';
+          document.getElementById('alertNotFound').style.display = 'block';
+        }
+        return;
+      }
+      // Show readmission alert if applicable
+      if (data.readmission) {
+        document.getElementById('alertReadmission').innerHTML =
+          '🔄 <strong>Readmission:</strong> ' + data.readmission_reason;
+        document.getElementById('alertReadmission').style.display = 'block';
+      }
+      populateStudent(data.student, data.readmission || false, data.prev_admitted_id || 0);
+    })
+    .catch(() => { btn.textContent = 'Search'; btn.disabled = false; });
 }
+
 // Allow Enter key in search
 document.getElementById('uanInput').addEventListener('keydown', e => { if (e.key === 'Enter') searchStudent(); });
 
 // ── Populate student data ─────────────────────────────────────
-function populateStudent(s) {
+function populateStudent(s, isReadmission, prevAdmittedId) {
   currentStudent = s;
+  currentStudent._isReadmission  = isReadmission  || false;
+  currentStudent._prevAdmittedId = prevAdmittedId || 0;
   const initials = (s.cname || '?').split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
   document.getElementById('stuAvatar').textContent = initials;
   document.getElementById('stuName').textContent   = s.cname || '—';
@@ -487,22 +545,59 @@ function populateStudent(s) {
   document.getElementById('fMobile').textContent = s.mobile    || '—';
   document.getElementById('fEmail').textContent  = s.email     || '—';
   document.getElementById('fCategory').textContent = s.category || '—';
-  document.getElementById('fEes').textContent    = s.ees       || '—';
 
-  // EWS / OBC-NCL conditional display
-  const cat = (s.category || '').toUpperCase();
-  document.getElementById('ewsGroup').style.display  = (cat === 'UR' || cat === 'GENERAL' || cat === 'UNRESERVED') ? 'flex' : 'none';
-  document.getElementById('obcGroup').style.display  = (cat.includes('OBC')) ? 'flex' : 'none';
+  // ── Entrance Scores section ───────────────────────────────
+  const scoreFields = [
+    // Entrance exam scores (no year pairing)
+    { key:'cee_score',  label:'CEE Score'  },
+    { key:'jee_score',  label:'JEE Score'  },
+    { key:'asuee_score',label:'ASUEE Score' },
+    // PG entrance scores with year
+    { key:'gate_score',  yearKey:'gate_year',  label:'GATE Score'  },
+    { key:'cat_score',   yearKey:'cat_year',   label:'CAT Score'   },
+    { key:'gmat_score',  yearKey:'gmat_year',  label:'GMAT Score'  },
+    { key:'mat_score',   yearKey:'mat_year',   label:'MAT Score'   },
+    { key:'nlm_score',   yearKey:'nlm_year',   label:'NLM Score'   },
+  ];
+  const scoresGrid = document.getElementById('scoresGrid');
+  scoresGrid.innerHTML = '';
+  let hasAnyScore = false;
+  scoreFields.forEach(f => {
+    const val = s[f.key];
+    if (!val || val.toString().trim() === '' || val === '0') return;
+    hasAnyScore = true;
+    const year  = f.yearKey && s[f.yearKey] ? ` (${s[f.yearKey]})` : '';
+    const block = document.createElement('div');
+    block.className = 'field-group';
+    block.innerHTML =
+      `<div class="field-label">${f.label}</div>` +
+      `<div class="field-value score-value">${val}${year}</div>`;
+    scoresGrid.appendChild(block);
+  });
+  document.getElementById('scoresSection').style.display = hasAnyScore ? 'block' : 'none';
 
-  // Pre-fill EWS / OBC-NCL from data
-  if (s.ews)    document.getElementById('fEws').value    = s.ews.toUpperCase();
-  if (s.obc_ncl)document.getElementById('fObcNcl').value = s.obc_ncl.toUpperCase();
+  if (document.getElementById('fEes').tagName === 'SPAN') {
+    // hidden span for no-exam programmes — keep blank
+  } else {
+    document.getElementById('fEes').textContent = s.ees || '—';
+  }
+
+  // Store raw ews/obc_ncl from application for pre-fill once admitted category is chosen
+  currentStudent._ews    = s.ews    ? s.ews.toUpperCase()    : '';
+  currentStudent._obcNcl = s.obc_ncl? s.obc_ncl.toUpperCase(): '';
+
+  // Reset EWS / OBC-NCL groups (visibility driven by Admitted Category, not Applied Category)
+  document.getElementById('ewsGroup').style.display = 'none';
+  document.getElementById('obcGroup').style.display = 'none';
+  document.getElementById('fEws').value    = '';
+  document.getElementById('fObcNcl').value = '';
 
   // Reset selects
   document.getElementById('fAdmittedCat').value = '';
   document.getElementById('fDept').value = '';
   document.getElementById('fProg').innerHTML = '<option value="">— Select Programme —</option>';
-  document.getElementById('fExamType').value = '';
+  const examEl = document.getElementById('fExamType');
+  if (examEl.tagName === 'SELECT') examEl.value = '';
   document.getElementById('seatStatus').style.display = 'none';
   document.getElementById('admitBtn').disabled = true;
 
@@ -526,11 +621,64 @@ function onDeptChange() {
   });
 }
 
-function onAdmittedCatChange() { checkSeats(); }
+// ── Admitted Category change → toggle EWS / OBC-NCL fields ────
+function onAdmittedCatChange() {
+  const cat = document.getElementById('fAdmittedCat').value;
+  const ewsGroup = document.getElementById('ewsGroup');
+  const obcGroup = document.getElementById('obcGroup');
+
+  ewsGroup.style.display = (cat === 'UR') ? 'flex' : 'none';
+  obcGroup.style.display = (cat === 'OBC/MOBC') ? 'flex' : 'none';
+
+  if (cat !== 'UR')        document.getElementById('fEws').value = '';
+  if (cat !== 'OBC/MOBC')  document.getElementById('fObcNcl').value = '';
+
+  // Pre-fill from application data if available and relevant
+  if (cat === 'UR' && currentStudent && currentStudent._ews) {
+    document.getElementById('fEws').value = currentStudent._ews;
+  }
+  if (cat === 'OBC/MOBC' && currentStudent && currentStudent._obcNcl) {
+    document.getElementById('fObcNcl').value = currentStudent._obcNcl;
+  }
+
+  checkSeats();
+}
+
+// Helper: fExamType may be a <select> (normal) or hidden <input value="NONE"> (Diploma/Integrated)
+function getExamTypeValue() {
+  const el = document.getElementById('fExamType');
+  return el ? el.value : '';
+}
+
+// ── Exam type change: show student score + check seats ───────
+function onExamTypeChange() {
+  const examType = getExamTypeValue();
+  const scoreEl  = document.getElementById('examScoreDisplay');
+
+  if (!examType || examType === 'NONE' || !currentStudent || !examScoreMap[examType]) {
+    if (scoreEl) scoreEl.style.display = 'none';
+  } else {
+    const map   = examScoreMap[examType];
+    const score = currentStudent[map.field];
+    const year  = map.year ? currentStudent[map.year] : null;
+    if (score && score.toString().trim() !== '' && score !== '0') {
+      const yearStr = year ? ` (${year})` : '';
+      scoreEl.textContent = `📊 Student's ${map.label}: ${score}${yearStr}`;
+      scoreEl.style.display = 'block';
+    } else {
+      scoreEl.textContent = `⚠️ No ${map.label} found for this student.`;
+      scoreEl.style.display = 'block';
+      scoreEl.style.background = '#fff8e6';
+      scoreEl.style.borderColor = '#f5c842';
+      scoreEl.style.color = '#7a5a10';
+    }
+  }
+  checkSeats();
+}
 
 // ── Check seat availability ───────────────────────────────────
 function checkSeats() {
-  const examType    = document.getElementById('fExamType').value;
+  const examType    = getExamTypeValue();
   const progCol     = document.getElementById('fProg').value;
   const admittedCat = document.getElementById('fAdmittedCat').value;
   const statusBar   = document.getElementById('seatStatus');
@@ -547,11 +695,11 @@ function checkSeats() {
       statusBar.style.display = 'block';
       if (data.seats > 0) {
         statusBar.className = 'seat-status-bar seat-ok';
-        statusBar.innerHTML = `✅ <strong>${data.seats}</strong> seat(s) available for <strong>${admittedCat}</strong> category under <strong>${examType}</strong>.`;
+        statusBar.innerHTML = `✅ <strong>${data.seats}</strong> seat(s) available for <strong>${admittedCat}</strong> category${examType !== 'NONE' ? ` under <strong>${examType}</strong>` : ''}.`;
         admitBtn.disabled = false;
       } else {
         statusBar.className = 'seat-status-bar seat-zero';
-        statusBar.innerHTML = `❌ No seats available for <strong>${admittedCat}</strong> category under <strong>${examType}</strong> for the selected programme.`;
+        statusBar.innerHTML = `❌ No seats available for <strong>${admittedCat}</strong> category${examType !== 'NONE' ? ` under <strong>${examType}</strong>` : ''} for the selected programme.`;
         admitBtn.disabled = true;
       }
     });
@@ -563,15 +711,24 @@ function admitStudent() {
   const btn = document.getElementById('admitBtn');
   btn.textContent = 'Processing…'; btn.disabled = true;
 
+  // Derive the entrance score for the selected exam type
+  const _examType  = getExamTypeValue();
+  const _scoreMap  = examScoreMap[_examType];
+  const _entScore  = (_scoreMap && currentStudent[_scoreMap.field])
+                       ? currentStudent[_scoreMap.field]
+                       : '';
+
   const payload = {
-    uan_no:         currentStudent.uan_no,
-    exam_type:      document.getElementById('fExamType').value,
-    prog_col:       document.getElementById('fProg').value,
-    dept_code:      document.getElementById('fDept').value,
-    admitted_cat:   document.getElementById('fAdmittedCat').value,
-    ews:            document.getElementById('fEws')?.value    || '',
-    obc_ncl:        document.getElementById('fObcNcl')?.value || '',
-    prog_type:      '<?= addslashes($progType) ?>',
+    uan_no:           currentStudent.uan_no,
+    exam_type:        _examType,
+    entrance_score:   _entScore,
+    prog_col:         document.getElementById('fProg').value,
+    dept_code:        document.getElementById('fDept').value,
+    admitted_cat:     document.getElementById('fAdmittedCat').value,
+    ews:              document.getElementById('fEws')?.value    || '',
+    obc_ncl:          document.getElementById('fObcNcl')?.value || '',
+    prog_type:        '<?= addslashes($progType) ?>',
+    prev_admitted_id: currentStudent._prevAdmittedId || 0,
   };
 
   const fd = new FormData();
@@ -602,6 +759,12 @@ function resetForm() {
   document.getElementById('uanInput').value = '';
   document.getElementById('studentCard').style.display = 'none';
   document.getElementById('alertNotFound').style.display = 'none';
+  document.getElementById('alertAlreadyAdmitted').style.display = 'none';
+  document.getElementById('alertReadmission').style.display = 'none';
+  document.getElementById('scoresSection').style.display = 'none';
+  document.getElementById('scoresGrid').innerHTML = '';
+  const _sd = document.getElementById('examScoreDisplay');
+  if (_sd) { _sd.style.display='none'; _sd.textContent=''; _sd.style.background=''; _sd.style.borderColor=''; _sd.style.color=''; }
   document.getElementById('uanInput').focus();
 }
 </script>
