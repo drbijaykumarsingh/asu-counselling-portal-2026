@@ -280,8 +280,8 @@ docs/screenshots/
 
 # Author
 
-**Dr. Abdul Hannan**
-**Mr. Sagar Kalita**
+**Dr. Abdul Hannan** |
+**Mr. Sagar Kalita** |
 **Mr. Bijay Kumar Singh**
 
 Department of Information Technology
