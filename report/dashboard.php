@@ -91,7 +91,7 @@ $stmt = $pdo->query("
     WHERE status = 5 
     GROUP BY programme_name 
     ORDER BY count DESC 
-    LIMIT 20
+    LIMIT 10
 ");
 $programDistribution = $stmt->fetchAll();
 
